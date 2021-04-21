@@ -106,7 +106,7 @@ class KMeansTestCase:
     ######################################
     ''' nome para gerar os arquivos de acordo.
     ========================================='''
-    OUTPUTS = ['{}_results_length.txt'.format(PERSON), '{}_results_nclusters.txt'.format(PERSON)]
+    OUTPUTS = ['out/{}_results_length.txt'.format(PERSON), 'out/{}_results_nclusters.txt'.format(PERSON)]
     for fname in OUTPUTS:
       open(fname, 'w').close()
       
