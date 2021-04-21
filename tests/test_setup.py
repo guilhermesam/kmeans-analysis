@@ -14,6 +14,7 @@ sys.path.append(str(pathlib.Path().absolute()))
 from models.kmeans import KMeans
 from tests.utils import file_length
 
+
 class KMeansTestCase:
   def __init__(self):
     self.model = None
@@ -124,6 +125,4 @@ class KMeansTestCase:
 
 if __name__ == '__main__':
   test = KMeansTestCase()    
-  # fake_data = np.loadtxt('data/fake_data.txt')
-  # test.performance_test(fake_data, 10)
   test.run()
