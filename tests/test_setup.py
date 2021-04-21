@@ -60,7 +60,7 @@ class KMeansTestCase:
   
 
   def __write_execution_time_file(self, output, time, n_clusters, iterations, file_length):
-    f = open(output, 'w')
+    f = open(output, 'a')
     f.write('{}\t{}\t{}\t{}\n'.format(time, n_clusters, iterations, file_length))
 
 
@@ -98,8 +98,18 @@ class KMeansTestCase:
     
 
   def run(self, charts = False):
-    MACHINE_NUMBER = 1
-    OUTPUTS = ['pc{}_results_length.txt'.format(MACHINE_NUMBER), 'pc{}_results_nclusters.txt'.format(MACHINE_NUMBER)]
+    '''
+    =======================================
+    Antes de rodar o teste, coloque seu'''
+    ######################################
+    PERSON = '\x00'######################
+    ######################################
+    ''' nome para gerar os arquivos de acordo.
+    ========================================='''
+    OUTPUTS = ['{}_results_length.txt'.format(PERSON), '{}_results_nclusters.txt'.format(PERSON)]
+    for fname in OUTPUTS:
+      open(fname, 'w').close()
+      
     EXECUTION_TIMES = 3
 
     sample_data_lengths = [1000, 2000, 3000, 4000, 5000, 6000]
@@ -130,16 +140,19 @@ class KMeansTestCase:
         fig, ax = plt.subplots()
         if 'nclusters' in fname:
           plt.suptitle("Tempo X Quantidade de  clusters\n", fontsize=14)
-          plt.title("Iterações: {}  Tamanho: {}".format(int(f[2][0]), int(f[3][0])), fontsize=10)
-          plt.plot(f[0], f[1], '-o', color='red', mfc='m', mec='m', markersize=6)
-          plt.ylabel("N Clusters")
+          plt.title("Iterações: {}  Tamanho dataset: {}".format(int(f[2][0]), int(f[3][0])), fontsize=10)
+          plt.bar(f[1], f[0], align='center', width=2)
+          plt.xlabel("N Clusters")
+          plt.xticks(f[1])
+          plt.ylabel("Tempo (s)")
+          plt.yticks(f[0])
         else:
           plt.suptitle("Tempo X Tamanho do dataset\n", fontsize=14)
           plt.title("Iterações: {}  N Clusters: {}".format(int(f[2][0]), int(f[1][0])), fontsize=10)
           plt.plot(f[0], f[3], '-o', color='green', mfc='b', mec='b', markersize=6)
           plt.ylabel("Tamanho")
-        
-        plt.xlabel("Tempo (s)")
+          plt.xticks(f[0])
+          plt.xlabel("Tempo (s)")
         # ax.legend()
         plt.savefig(fname + '.png')
     
