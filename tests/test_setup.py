@@ -110,9 +110,9 @@ class KMeansTestCase:
     for fname in OUTPUTS:
       open(fname, 'w').close()
       
-    EXECUTION_TIMES = 3
+    EXECUTION_TIMES = 1
 
-    sample_data_lengths = [1000, 2000, 3000, 4000, 5000, 6000]
+    sample_data_lengths = [5000, 7500, 10000, 12500, 15000]
     NUM_COLUMNS = 2
     sample_data = [self.__generate_fake_data(NUM_COLUMNS, y) for y in sample_data_lengths]
 
@@ -127,7 +127,7 @@ class KMeansTestCase:
     print('testing with different n_clusters')
     print('data size: ', sample_data_lengths[0])
     # testando com diferentes números de clusters
-    for n_clusters in [4, 8, 12]:
+    for n_clusters in [4, 6, 8, 10, 12]:
       print('current: ', n_clusters)
       model = KMeans(n_clusters=n_clusters, iterations=50)
       self.performance_test(OUTPUTS[1], sample_data[0], EXECUTION_TIMES, model)
@@ -135,13 +135,12 @@ class KMeansTestCase:
     if (charts):
       for fname in OUTPUTS:
         f = np.loadtxt(fname).T
-        print(f[0])
 
         fig, ax = plt.subplots()
         if 'nclusters' in fname:
           plt.suptitle("Tempo X Quantidade de  clusters\n", fontsize=14)
           plt.title("Iterações: {}  Tamanho dataset: {}".format(int(f[2][0]), int(f[3][0])), fontsize=10)
-          plt.bar(f[1], f[0], align='center', width=2)
+          plt.bar(f[1], f[0], width=1.2, color="purple")
           plt.xlabel("N Clusters")
           plt.xticks(f[1])
           plt.ylabel("Tempo (s)")
@@ -149,11 +148,12 @@ class KMeansTestCase:
         else:
           plt.suptitle("Tempo X Tamanho do dataset\n", fontsize=14)
           plt.title("Iterações: {}  N Clusters: {}".format(int(f[2][0]), int(f[1][0])), fontsize=10)
-          plt.plot(f[0], f[3], '-o', color='green', mfc='b', mec='b', markersize=6)
+          plt.plot(f[0], f[3], '-o', color='blue', mfc='r', mec='r', markersize=8, linewidth=2)
           plt.ylabel("Tamanho")
           plt.xticks(f[0])
           plt.xlabel("Tempo (s)")
-        # ax.legend()
+          plt.yticks(f[3])
+
         plt.savefig(fname + '.png')
     
 
