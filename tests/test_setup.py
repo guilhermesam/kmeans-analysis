@@ -138,7 +138,7 @@ class KMeansTestCase:
 
         fig, ax = plt.subplots()
         if 'nclusters' in fname:
-          plt.suptitle("Tempo X Quantidade de  clusters\n", fontsize=14)
+          plt.suptitle("Tempo X Quantidade de  clusters (PC-{})\n".format(PERSON), fontsize=14)
           plt.title("Iterações: {}  Tamanho dataset: {}".format(int(f[2][0]), int(f[3][0])), fontsize=10)
           plt.bar(f[1], f[0], width=1.2, color="purple")
           plt.xlabel("N Clusters")
@@ -146,7 +146,7 @@ class KMeansTestCase:
           plt.ylabel("Tempo (s)")
           plt.yticks(f[0])
         else:
-          plt.suptitle("Tempo X Tamanho do dataset\n", fontsize=14)
+          plt.suptitle("Tempo X Tamanho do dataset (PC-{})\n".format(PERSON), fontsize=14)
           plt.title("Iterações: {}  N Clusters: {}".format(int(f[2][0]), int(f[1][0])), fontsize=10)
           plt.plot(f[0], f[3], '-o', color='blue', mfc='r', mec='r', markersize=8, linewidth=2)
           plt.ylabel("Tamanho")
