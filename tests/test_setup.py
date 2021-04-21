@@ -8,6 +8,7 @@ import pathlib
 import os
 
 import numpy as np
+import matplotlib.pyplot as plt
 
 sys.path.append(str(pathlib.Path().absolute()))
 
@@ -58,13 +59,12 @@ class KMeansTestCase:
     return np.array(dataset)
   
 
-  def __write_execution_time_file(self, time, n_clusters, iterations, file_length):
-    filepath = 'performance_results.txt'
-    file = open(filepath, 'a')
-    file.write('{}\t{}\t{}\t{}\n'.format(time, n_clusters, iterations, file_length))
+  def __write_execution_time_file(self, output, time, n_clusters, iterations, file_length):
+    f = open(output, 'w')
+    f.write('{}\t{}\t{}\t{}\n'.format(time, n_clusters, iterations, file_length))
 
 
-  def performance_test(self, data, times, model):
+  def performance_test(self, output, data, times, model):
     file_len = file_length(data)
     self.model = model
 
@@ -77,6 +77,7 @@ class KMeansTestCase:
       timers.append(end - start)
 
     self.__write_execution_time_file(
+      output,
       sum(timers) / len(timers),
       self.model.n_clusters,
       self.model.iterations,
@@ -86,7 +87,7 @@ class KMeansTestCase:
   
   def __add_header_to_performance_file(self):
     file_name = 'performance_results.txt'
-    line = 'avg time\tn_clusters\titerations\tfile_length'
+    line = 'avg_time\tn_clusters\titerations\tfile_length'
     dummy_file = file_name + '.bak'
     with open(file_name, 'r') as read_obj, open(dummy_file, 'w') as write_obj:
         write_obj.write(line + '\n')
@@ -96,11 +97,13 @@ class KMeansTestCase:
     os.rename(dummy_file, file_name)
     
 
-  def run(self):
-    EXECUTION_TIMES = 5
+  def run(self, charts = False):
+    MACHINE_NUMBER = 1
+    OUTPUTS = ['pc{}_results_length.txt'.format(MACHINE_NUMBER), 'pc{}_results_nclusters.txt'.format(MACHINE_NUMBER)]
+    EXECUTION_TIMES = 3
 
-    sample_data_lengths = [1000, 2500, 5000]
-    NUM_COLUMNS = 4
+    sample_data_lengths = [1000, 2000, 3000, 4000, 5000, 6000]
+    NUM_COLUMNS = 2
     sample_data = [self.__generate_fake_data(NUM_COLUMNS, y) for y in sample_data_lengths]
 
     # testando com diferentes tamanhos de arquivos
@@ -109,7 +112,7 @@ class KMeansTestCase:
 
     for data in sample_data:
       print('current: ', data.shape[0])
-      self.performance_test(data, EXECUTION_TIMES, model)
+      self.performance_test(OUTPUTS[0], data, EXECUTION_TIMES, model)
 
     print('testing with different n_clusters')
     print('data size: ', sample_data_lengths[0])
@@ -117,12 +120,30 @@ class KMeansTestCase:
     for n_clusters in [4, 8, 12]:
       print('current: ', n_clusters)
       model = KMeans(n_clusters=n_clusters, iterations=50)
-      self.performance_test(sample_data[0], EXECUTION_TIMES, model)
+      self.performance_test(OUTPUTS[1], sample_data[0], EXECUTION_TIMES, model)
 
-    self.__add_header_to_performance_file()
-    print('results saved in performance_results.txt file')
+    if (charts):
+      for fname in OUTPUTS:
+        f = np.loadtxt(fname).T
+        print(f[0])
 
+        fig, ax = plt.subplots()
+        if 'nclusters' in fname:
+          plt.suptitle("Tempo X Quantidade de  clusters\n", fontsize=14)
+          plt.title("Iterações: {}  Tamanho: {}".format(int(f[2][0]), int(f[3][0])), fontsize=10)
+          plt.plot(f[0], f[1], '-o', color='red', mfc='m', mec='m', markersize=6)
+          plt.ylabel("N Clusters")
+        else:
+          plt.suptitle("Tempo X Tamanho do dataset\n", fontsize=14)
+          plt.title("Iterações: {}  N Clusters: {}".format(int(f[2][0]), int(f[1][0])), fontsize=10)
+          plt.plot(f[0], f[3], '-o', color='green', mfc='b', mec='b', markersize=6)
+          plt.ylabel("Tamanho")
+        
+        plt.xlabel("Tempo (s)")
+        # ax.legend()
+        plt.savefig(fname + '.png')
+    
 
 if __name__ == '__main__':
   test = KMeansTestCase()    
-  test.run()
+  test.run(charts = True)
