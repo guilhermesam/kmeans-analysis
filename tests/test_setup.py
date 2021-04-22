@@ -10,7 +10,7 @@ import os
 import numpy as np
 import matplotlib.pyplot as plt
 
-sys.path.append(str(pathlib.Path().absolute()))
+sys.path.append(str(pathlib.Path().absolute().parent))
 
 from models.kmeans import KMeans
 from tests.utils import file_length
@@ -106,7 +106,7 @@ class KMeansTestCase:
     ######################################
     ''' nome para gerar os arquivos de acordo.
     ========================================='''
-    OUTPUTS = ['out/{}_results_length.txt'.format(PERSON), 'out/{}_results_nclusters.txt'.format(PERSON)]
+    OUTPUTS = ['../out/{}_results_length.txt'.format(PERSON), '../out/{}_results_nclusters.txt'.format(PERSON)]
     for fname in OUTPUTS:
       open(fname, 'w').close()
       

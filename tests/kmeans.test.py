@@ -6,7 +6,7 @@ import time
 import pandas as pd
 import numpy as np
 
-sys.path.append(str(pathlib.Path().absolute()))
+sys.path.append(str(pathlib.Path().absolute().parent))
 
 from models.kmeans import KMeans
 from tests.utils import TestUtils
