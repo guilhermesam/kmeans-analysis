@@ -132,41 +132,59 @@ class KMeansTestCase:
       model = KMeans(n_clusters=n_clusters, iterations=50)
       self.performance_test(OUTPUTS[1], sample_data[0], EXECUTION_TIMES, model)
 
-
     if (charts):
-      
       for fname in OUTPUTS:
         f = np.loadtxt(fname).T
-
-        parametros, pcov = scipy_opt.curve_fit(funcao_linear, xdata=self.tamanhos, ydata=f[0])
-        self.aproximados = [funcao_linear(x, *parametros) for x in self.tamanhos]
-        print("aproximados:           {}".format(self.aproximados))
-        print("parametros_otimizados: {}".format(parametros))
-        print("pcov:                  {}".format(pcov))
-        print()
-
         fig, ax = plt.subplots()
-        if 'nclusters' in fname:
-          plt.suptitle("Tempo X Quantidade de  clusters ({})\n".format(PERSON), fontsize=14)
-          plt.title("Iterações: {}  Tamanho dataset: {}".format(int(f[2][0]), int(f[3][0])), fontsize=10)
-          plt.bar(f[1], f[0], width=1.2, color="purple")
-          plt.xlabel("N Clusters")
-          plt.xticks(f[1])
-          plt.ylabel("Tempo (s)")
-          plt.yticks(f[0])
-        else:
+
+        if 'length' in fname:
+          parametros, pcov = scipy_opt.curve_fit(funcao_linear, xdata=self.tamanhos, ydata=f[0])
+          self.aproximados = [funcao_linear(x, *parametros) for x in self.tamanhos]
+          print("aproximados:           {}".format(self.aproximados))
+          print("parametros_otimizados: {}".format(parametros))
+          print("pcov:                  {}".format(pcov))
+          print()
+
           plt.suptitle("Tempo X Tamanho do dataset ({})\n".format(PERSON), fontsize=14)
-          plt.title("Iterações: {}  N Clusters: {}".format(int(f[2][0]), int(f[1][0])), fontsize=10)
-          plt.plot(f[3], f[0], '-o', color='blue', mfc='r', mec='r', markersize=8, linewidth=2)
-          plt.ylabel("Tempo (s)")
-          plt.xticks(f[3])
+          plt.title("Iterações: {} N Clusters: {}".format(int(f[2][0]), int(f[1][0])), fontsize=10)
+          plt.plot(f[3], f[0], '-bo', color='blue', mfc='b', mec='b', markersize=4, linewidth=2)
+          plt.xlim([min(f[3]), max(f[3])])
           plt.xlabel("Tamanho")
+          plt.xticks(f[3])
+          plt.ylim([0, 60])
+          plt.ylabel("Tempo (s)")
+          plt.plot(self.tamanhos, self.aproximados, '-o', markersize=4, label="Teste", color="red")
+          plt.legend(["k-means medido", "k-means aproximado"])
+          plt.grid(linestyle='dotted')
+          plt.savefig(fname[:-4] + '.png')
           # plt.yticks(f[0])
 
-        self.medias = f[0];
-        plt.plot(self.tamanhos, self.aproximados, '-o', label="Teste", color="red")
+        else:
+          self.tamanhos = [4, 6, 8, 10, 12]
+          parametros, pcov = scipy_opt.curve_fit(funcao_linear, xdata=self.tamanhos, ydata=f[0])
+          self.aproximados = [funcao_linear(x, *parametros) for x in self.tamanhos]
+          print("aproximados:           {}".format(self.aproximados))
+          print("parametros_otimizados: {}".format(parametros))
+          print("pcov:                  {}".format(pcov))
+          print()
+          plt.suptitle("Tempo X Quantidade de clusters ({})\n".format(PERSON), fontsize=14)
+          plt.title("Iterações: {} Tamanho dataset: {}".format(int(f[2][0]), int(f[3][0])), fontsize=10)
+          plt.plot(f[1], f[0], '-mo', color='purple', mfc='m', mec='m', markersize=4, linewidth=2)
+          plt.xlabel("N Clusters")
+          plt.xticks([4, 6, 8, 10, 12])
+          plt.xlim([min(f[1]), max(f[1])])
+          plt.ylim([0, 60])
+          plt.ylabel("Tempo (s)")
+          plt.plot([4, 6, 8, 10, 12], self.aproximados, '-o', markersize=4, label="Teste", color="red")
+          plt.legend(["k-means medido", "k-means aproximado"])
+          plt.grid(linestyle='dotted')
+          plt.savefig(fname[:-4] + '.png')
+       
+          #plt.yticks(f[0])          
+        
+        self.medias = f[0]
         # plt.plot(parametros, f[0], width=1, color="red")
-        plt.savefig(fname + '.png')
+
 
 if __name__ == '__main__':
   #Argumentos na linha de comando:
